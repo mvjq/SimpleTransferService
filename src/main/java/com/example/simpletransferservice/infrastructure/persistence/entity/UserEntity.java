@@ -1,4 +1,52 @@
 package com.example.simpletransferservice.infrastructure.persistence.entity;
 
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "users")
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
+
+    @Column(name = "document", nullable = false, unique = true, length = 14)
+    private  String document;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "user_type", nullable = false)
+    private String userType;
+
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private WalletEntity walletEntity;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updatred_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
