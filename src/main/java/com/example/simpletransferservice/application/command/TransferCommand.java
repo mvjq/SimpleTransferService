@@ -1,23 +1,24 @@
-package com.example.simpletransferservice.presentation.dto;
+package com.example.simpletransferservice.application.command;
 
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class TransferRequest {
+public class TransferCommand {
     @NotNull
-    @Positive
     private Long payerId;
-    @Positive
-    @NotNull Long payeeId;
+    @NotNull
+    private Long payeeId;
     @NotNull
     @DecimalMin(value = "0.01")
     private BigDecimal amount;
