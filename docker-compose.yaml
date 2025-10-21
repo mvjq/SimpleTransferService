@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: transfer
+      POSTGRES_USER: transfer_user
+      POSTGRES_PASSWORD: transfer_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - transfer-network
+
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: transfer-app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      # Spring Configuration
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+
+      # Database Configuration
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: transfer
+      DB_USERNAME: transfer_user
+      DB_PASSWORD: transfer_password
+
+      # JVM Options
+      JAVA_OPTS: >-
+        -XX:+UseContainerSupport
+        -XX:MaxRAMPercentage=75.0
+        -XX:InitialRAMPercentage=50.0
+        -Djava.security.egd=file:/dev/./urandom
+    ports:
+      - "8080:8080"
+    networks:
+      - transfer-network
+
+
+# Volumes
+volumes:
+  postgres_data:
+    driver: local
+
+# Networks
+networks:
+  transfer-network:
+    driver: bridge
