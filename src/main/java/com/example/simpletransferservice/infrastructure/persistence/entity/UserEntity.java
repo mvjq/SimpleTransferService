@@ -16,6 +16,7 @@ public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "full_name", nullable = false)
@@ -33,7 +34,8 @@ public class UserEntity {
     @Column(name = "user_type", nullable = false)
     private String userType;
 
-    @OneToOne(mappedBy = "walletEntity", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "wallet_id")
     private WalletEntity walletEntity;
 
     @Column(name = "created_at", nullable = false, updatable = false)

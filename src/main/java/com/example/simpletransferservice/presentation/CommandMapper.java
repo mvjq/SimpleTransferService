@@ -6,6 +6,8 @@ import com.example.simpletransferservice.presentation.dto.TransferRequest;
 import com.example.simpletransferservice.presentation.dto.TransferResponse;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class CommandMapper {
 
@@ -15,7 +17,7 @@ public class CommandMapper {
         return TransferCommand.builder()
                 .payerId(request.getPayerId())
                 .payeeId(request.getPayeeId())
-                .amount(request.getAmount())
+                .amount(BigDecimal.valueOf(request.getAmount()))
                 .build();
     }
 
@@ -23,7 +25,7 @@ public class CommandMapper {
         return TransferRequest.builder()
                 .payerId(command.getPayerId())
                 .payeeId(command.getPayeeId())
-                .amount(command.getAmount())
+                .amount(command.getAmount().doubleValue())
                 .build();
     }
 

@@ -12,20 +12,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/transfers")
-@RequiredArgsConstructor
-@Slf4j
 public class TransferController {
 
-    private TransferUseCase transferUseCase;
-    private CommandMapper commandMapper;
+    private final TransferUseCase transferUseCase;
+    private final CommandMapper commandMapper;
+
+    public TransferController(TransferUseCase transferUseCase, CommandMapper commandMapper) {
+        this.transferUseCase = transferUseCase;
+        this.commandMapper = commandMapper;
+    }
 
     @PostMapping
     public ResponseEntity<TransferResponse> transfer(@Valid @RequestBody TransferRequest transferRequest) {
