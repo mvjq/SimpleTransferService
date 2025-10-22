@@ -6,102 +6,94 @@ import com.example.simpletransferservice.application.port.in.TransferUseCase;
 import com.example.simpletransferservice.application.port.out.AuthorizationPort;
 import com.example.simpletransferservice.application.port.out.TransactionRepositoryPort;
 import com.example.simpletransferservice.application.port.out.UserRepositoryPort;
+import com.example.simpletransferservice.application.port.out.WalletRepositoryPort;
 import com.example.simpletransferservice.domain.DomainMapper;
 import com.example.simpletransferservice.domain.exception.UserNotFoundException;
 import com.example.simpletransferservice.domain.model.Transaction;
 import com.example.simpletransferservice.domain.model.User;
+import com.example.simpletransferservice.domain.model.Wallet;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class TransferService implements TransferUseCase {
 
     private final UserRepositoryPort userRepository;
-    private final UserRepositoryPort walletRepository;
+    private final WalletRepositoryPort walletRepository;
     private final TransactionRepositoryPort transactionRepository;
     private final AuthorizationPort authorizationPort;
     private final DomainMapper domainMapper;
 
-    public TransferService(UserRepositoryPort userRepository, UserRepositoryPort walletRepository, UserRepositoryPort transactionRepository, TransactionRepositoryPort transactionRepository1, AuthorizationPort authorizationPort, DomainMapper domainMapper) {
+    public TransferService(UserRepositoryPort userRepository, WalletRepositoryPort walletRepository, TransactionRepositoryPort transactionRepository, AuthorizationPort authorizationPort, DomainMapper domainMapper) {
         this.userRepository = userRepository;
         this.walletRepository = walletRepository;
-        this.transactionRepository = transactionRepository1;
+        this.transactionRepository = transactionRepository;
         this.authorizationPort = authorizationPort;
         this.domainMapper = domainMapper;
     }
+
 
     @Override
     @Transactional
     public TransferResult transfer(TransferCommand command) {
 
-        // create transaction
-        // convert TransferCommand to Transaction Domain
-        // created with pending
+        log.info("Starting transfer from user {} to user {} amount {}",
+                command.getPayerId(), command.getPayeeId(), command.getAmount());
+
         Transaction transaction = domainMapper.toDomain(command);
-        // save transaction as pending
 
-        boolean authorized = authorizationPort.authorize(command);
-        if (!authorized) {
-            // move transaction to failed authorization
-            // add failure reason
-            // end flow
-            transaction.failedAuthorization("Failed authorization");
-            return new TransferResult();
-        }
+        User payer = userRepository.findById(command.getPayerId()).orElseThrow(
+                () -> new UserNotFoundException("Payer not found"));
+        User payee = userRepository.findById(command.getPayerId()).orElseThrow(
+                () -> new UserNotFoundException("Payee not found"));
 
-        transaction.authorize();
+        Wallet payerWallet = walletRepository.findByUserIdWithPessimisticLocking(payer.getId())
+                .orElseThrow(() -> new UserNotFoundException("Payer wallet not found"));
+        Wallet payeeWallet = walletRepository.findByUserIdWithPessimisticLocking(payee.getId())
+                .orElseThrow(() -> new UserNotFoundException("Payee wallet not found"));
+
+        // validateTransfer(...)
+        transaction.validated();
         transactionRepository.save(transaction);
 
         try {
-            User payer = userRepository.findById(command.getPayerId())
-                    .orElseThrow(() -> new UserNotFoundException("Payer not found"));
-            User payee = userRepository.findById(command.getPayeeId())
-                    .orElseThrow(() -> new UserNotFoundException("Payer not found"));
+            boolean authorized = authorizationPort.authorize(command);
+            if (!authorized) {
+                transaction.failedAuthorization("Failed authorization");
+                // TODO return valid trasnferResult
+                return new TransferResult();
+            }
+            transaction.process();
+            transactionRepository.save(transaction);
 
+            var newPayerWallet = payerWallet.debit(command.getAmount());
+            var newPayeeWallet = payeeWallet.credit(command.getAmount());
 
-            // validation
-//             if (payer.canTransfer() && payer.)
-            if (payer.canTransfer() && )
+            walletRepository.save(newPayerWallet);
+            walletRepository.save(newPayeeWallet);
 
-            // debit payer wallet
-            // credit payee wallet
+            transaction.complete();
+            transactionRepository.save(transaction);
+            log.info("Transfer authorized for transaction id {}", transaction.getId());
+            // TODO implement transferResult
+            return new TransferResult();
         } catch (Exception e) {
-            // move transaction to failed processing
-            // add failure reason
-            if (transaction.getStatus().isFinal()) {
+            log.error("Transfer failed {}", e.getMessage(), e);
+            if (transaction.isCompleted()) {
                 transaction.reverse();
             } else {
-                transaction.failedValidation("Failed processing: " + e.getMessage());
+                transaction.failProcessing(e.getMessage());
             }
-
-            // TODO: implement transferResult
-            return new TransferResult();
-        } finally {
             transactionRepository.save(transaction);
+            //TODO implements trasnferResult
+            return new TransferResult();
         }
+    }
 
-        // now i state validating
-        // apply all the business rules
-        // if any rule fails
-        // move transaction to failed validation
-        // add failure reason
-        // end flow
+    //TODO implements this to debit/credit and save repository
+    public void revertTransfer() {
 
-
-        // the checking for the authorization code needs to be "blocked"
-        // i cannot continue a transaction without authorization
-
-
-        // needs to checck the autheitcation service
-        // needs to get users rom the repositroy
-        // check if the wallt has enough balance
-        // debit the payer wallet
-        // credit the payee wallet
-        // save the transaction
-        // return the result
-        // notify event (fire and forget (using listenner/observer)
-
-
-        return null;
     }
 }

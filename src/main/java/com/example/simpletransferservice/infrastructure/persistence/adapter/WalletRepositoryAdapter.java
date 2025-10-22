@@ -3,7 +3,9 @@ package com.example.simpletransferservice.infrastructure.persistence.adapter;
 import com.example.simpletransferservice.application.port.out.WalletRepositoryPort;
 import com.example.simpletransferservice.domain.DomainMapper;
 import com.example.simpletransferservice.domain.model.Wallet;
+import com.example.simpletransferservice.infrastructure.persistence.entity.WalletEntity;
 import com.example.simpletransferservice.infrastructure.persistence.repository.WalletJpaRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,13 @@ public class WalletRepositoryAdapter implements WalletRepositoryPort {
     @Override
     public Optional<Wallet> findByUserId(Long id) {
         return walletJpaRepository.findByUserId(id)
+                .map(domainMapper::toDomain);
+    }
+
+    @Override
+    @Transactional
+    public Optional<Wallet> findByUserIdWithPessimisticLocking(Long id) {
+        return walletJpaRepository.findByUserIdWithPessimisticLocking(id)
                 .map(domainMapper::toDomain);
     }
 }

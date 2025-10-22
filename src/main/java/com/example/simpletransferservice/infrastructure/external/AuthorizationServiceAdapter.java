@@ -3,12 +3,18 @@ package com.example.simpletransferservice.infrastructure.external;
 import com.example.simpletransferservice.application.command.TransferCommand;
 import com.example.simpletransferservice.application.port.out.AuthorizationPort;
 import com.example.simpletransferservice.infrastructure.external.dto.AuthorizationResponse;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import javax.swing.text.StyledEditorKit;
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
-@Component
+@Service
 public class AuthorizationServiceAdapter implements AuthorizationPort {
 
     private final RestClient restClient;
@@ -19,7 +25,10 @@ public class AuthorizationServiceAdapter implements AuthorizationPort {
                 .build();
     }
 
+
     @Override
+    @CircuitBreaker(name = "authorizationServiceCircuitBreaker", fallbackMethod = "authorizeFallback")
+    @Retry(name ="AuthorizationServiceRetry")
     public boolean authorize(TransferCommand command) {
         var response = restClient.get()
                 .uri("/api/v2/authorize")
@@ -27,6 +36,11 @@ public class AuthorizationServiceAdapter implements AuthorizationPort {
                 .body(AuthorizationResponse.class);
 
         log.info("Authorization response: {} for command {}", response, command);
+        if (response == null) {
+            log.error("Authorization response for command {} is null", command);
+            return false;
+        }
+
         return response.getData().isAuthorization();
     }
 }
