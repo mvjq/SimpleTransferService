@@ -5,6 +5,8 @@ import com.example.simpletransferservice.application.port.in.UserResult;
 import com.example.simpletransferservice.application.port.in.UserUseCase;
 import com.example.simpletransferservice.domain.DomainMapper;
 import com.example.simpletransferservice.domain.exception.UserAlreadyExistsException;
+import com.example.simpletransferservice.domain.exception.UserNotFoundException;
+import com.example.simpletransferservice.domain.exception.WalleNotFoundException;
 import com.example.simpletransferservice.domain.model.User;
 import com.example.simpletransferservice.domain.model.Wallet;
 import com.example.simpletransferservice.domain.port.out.UserRepositoryPort;
@@ -90,7 +92,7 @@ public class UserService implements UserUseCase {
     @Override
     public UserResult getUserByEmail(String email) {
         User foundUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
 
         return findWalletAndReturnResult(foundUser);
     }
@@ -98,7 +100,7 @@ public class UserService implements UserUseCase {
     @Override
     public UserResult getUserByDocumentNumber(String documentNumber) {
         User foundUser = userRepository.findByDocument(documentNumber)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + documentNumber));
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + documentNumber));
 
         return findWalletAndReturnResult(foundUser);
 
@@ -106,7 +108,7 @@ public class UserService implements UserUseCase {
 
     private UserResult findWalletAndReturnResult(User foundUser) {
         Wallet wallet = walletRepository.findByUserId(foundUser.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Wallet not found for user ID: " + foundUser.getId()));
+                .orElseThrow(() -> new WalleNotFoundException("Wallet not found for user ID: " + foundUser.getId()));
 
         return UserResult.builder()
                 .id(foundUser.getId())
