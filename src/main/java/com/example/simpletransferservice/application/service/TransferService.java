@@ -3,6 +3,7 @@ package com.example.simpletransferservice.application.service;
 import com.example.simpletransferservice.application.command.TransferCommand;
 import com.example.simpletransferservice.application.port.in.TransferResult;
 import com.example.simpletransferservice.application.port.in.TransferUseCase;
+import com.example.simpletransferservice.domain.exception.InsufficientBalanceException;
 import com.example.simpletransferservice.domain.port.out.AuthorizationPort;
 import com.example.simpletransferservice.domain.port.out.TransactionRepositoryPort;
 import com.example.simpletransferservice.domain.port.out.UserRepositoryPort;
@@ -41,6 +42,10 @@ public class TransferService implements TransferUseCase {
         log.info("Starting transfer from user {} to user {} amount {}",
                 command.getPayerId(), command.getPayeeId(), command.getAmount());
 
+        if (command.getPayeeId().equals(command.getPayerId())) {
+            throw new IllegalArgumentException("Payee IDs must be different from payee IDs");
+        }
+
         Transaction transaction = domainMapper.toDomain(command);
 
         User payer = userRepository.findById(command.getPayerId()).orElseThrow(
@@ -48,16 +53,27 @@ public class TransferService implements TransferUseCase {
         User payee = userRepository.findById(command.getPayeeId()).orElseThrow(
                 () -> new UserNotFoundException("Payee not found"));
 
+        if (!payer.canTransfer()) {
+            throw new IllegalArgumentException("Payer is not allowed to make transfers (type MERCHANT)");
+        }
+
         Wallet payerWallet = walletRepository.findByUserIdWithPessimisticLocking(payer.getId())
                 .orElseThrow(() -> new UserNotFoundException("Payer wallet not found"));
         Wallet payeeWallet = walletRepository.findByUserIdWithPessimisticLocking(payee.getId())
                 .orElseThrow(() -> new UserNotFoundException("Payee wallet not found"));
 
+
+        if (payerWallet.getBalance().compareTo(command.getAmount()) < 0) {
+            throw new InsufficientBalanceException(
+                    String.format("Insufficient balance. Available: %s, Required: %s",
+                            payerWallet.getBalance(), command.getAmount())
+            );
+        }
+
         try {
             boolean authorized = authorizationPort.authorize(command);
             if (!authorized) {
                 transaction.failedAuthorization("Failed authorization");
-                // TODO return valid trasnferResult
                 return TransferResult.builder()
                         .transactionId(transaction.getId())
                         .payeeId(payee.getId())

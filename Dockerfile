@@ -8,10 +8,8 @@ COPY build.gradle.kts .
 COPY settings.gradle.kts .
 RUN ./gradlew dependencies --no-daemon
 COPY src src/
-RUN ./gradlew build --no-daemon || true
-RUN ls -la /app/build/libs/
+RUN ./gradlew build --no-daemon
 
-# Stage 2: Runtime
 FROM eclipse-temurin:21-jre-alpine
 LABEL maintainer="Marcos Vinicius Junqueira (mvjq)"
 LABEL version="1.0.0"
