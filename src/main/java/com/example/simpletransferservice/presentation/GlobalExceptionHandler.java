@@ -2,6 +2,7 @@ package com.example.simpletransferservice.presentation;
 
 
 import com.example.simpletransferservice.domain.exception.InsufficientBalanceException;
+import com.example.simpletransferservice.domain.exception.UserAlreadyExistsException;
 import com.example.simpletransferservice.domain.exception.UserNotFoundException;
 import com.example.simpletransferservice.domain.exception.WalleNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +54,26 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
     }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(
+            UserAlreadyExistsException ex,
+            WebRequest request) {
+
+        log.warn("User already exists: {}", ex.getMessage());
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT.value());
+        body.put("error", "Conflict");
+        body.put("message", ex.getMessage());
+        body.put("path", request.getDescription(false).replace("uri=", ""));
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity {
@@ -34,8 +35,8 @@ public class UserEntity {
     @Column(name = "user_type", nullable = false)
     private String userType;
 
-    @Column(name = "wallet_id", nullable = false)
-    private Long walledId;
+    @Column(name = "wallet_id")
+    private Long walletId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
