@@ -22,7 +22,7 @@ public class CommandMapper {
         return TransferCommand.builder()
                 .payerId(request.getPayerId())
                 .payeeId(request.getPayeeId())
-                .amount(request.getAmount())
+                .value(request.getValue())
                 .build();
     }
 
@@ -30,7 +30,7 @@ public class CommandMapper {
         return TransferRequest.builder()
                 .payerId(command.getPayerId())
                 .payeeId(command.getPayeeId())
-                .amount(BigDecimal.valueOf(command.getAmount().doubleValue()))
+                .value(BigDecimal.valueOf(command.getValue().doubleValue()))
                 .build();
     }
 
@@ -38,7 +38,7 @@ public class CommandMapper {
         return TransferResponse.builder()
                 .payerId(result.getPayerId())
                 .payeeId(result.getPayeeId())
-                .amount(result.getAmount())
+                .value(result.getAmount())
                 .status(result.getStatus())
                 .message(result.getMessage())
                 .build();

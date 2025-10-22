@@ -20,7 +20,7 @@ public class DomainMapper {
         return Transaction.builder()
                 .payerId(command.getPayerId())
                 .payeeId(command.getPayeeId())
-                .amount(command.getAmount())
+                .amount(command.getValue())
                 .build();
     }
 
