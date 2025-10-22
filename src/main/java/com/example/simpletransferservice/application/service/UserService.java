@@ -61,6 +61,7 @@ public class UserService implements UserUseCase {
                     updatedUser.getId(), savedWallet.getId());
 
             return UserResult.builder()
+                    .id(updatedUser.getId())
                     .email(updatedUser.getEmail())
                     .fullName(updatedUser.getFullName())
                     .documentNumber(updatedUser.getDocument())
@@ -108,6 +109,7 @@ public class UserService implements UserUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found for user ID: " + foundUser.getId()));
 
         return UserResult.builder()
+                .id(foundUser.getId())
                 .email(foundUser.getEmail())
                 .fullName(foundUser.getFullName())
                 .balance(wallet.getBalance())

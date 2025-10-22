@@ -14,14 +14,13 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
+    private Long Id;
     @NotNull
     private String fullName;
     @NotNull
     private String documentNumber;
     @NotNull
     private String email;
-    @NotNull
-    private String password;
     @NotNull
     private String userType;
     @NotNull

@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResult {
+    private Long id;
     @NotNull
     private String fullName;
     @NotNull

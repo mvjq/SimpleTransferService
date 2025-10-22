@@ -57,6 +57,7 @@ public class CommandMapper {
 
     public UserResponse toResponse(UserResult userResult) {
         return UserResponse.builder()
+                .Id(userResult.getId())
                 .fullName(userResult.getFullName())
                 .email(userResult.getEmail())
                 .documentNumber(userResult.getDocumentNumber())

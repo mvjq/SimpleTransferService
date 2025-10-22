@@ -39,7 +39,7 @@ public class Transaction {
             throw new IlegalTransitionStateException(failureReason);
         }
 
-        log.info("Transitioning transaction [{}] from status [{}] to [{}]", id, status, newStatus);
+        log.info("Transitioning transaction from status [{}] to [{}]", status, newStatus);
 
         this.status = newStatus;
         this.updatedAt = LocalDateTime.now();
@@ -51,7 +51,7 @@ public class Transaction {
             throw new IlegalTransitionStateException(failureReason);
         }
 
-        log.info("Transitioning transaction [{}] from status [{}] to [{}] with failure reason {}", id, status,
+        log.info("Transitioning transaction from status [{}] to [{}] with failure reason {}", status,
                 newStatus, failureReason);
 
         this.status = newStatus;

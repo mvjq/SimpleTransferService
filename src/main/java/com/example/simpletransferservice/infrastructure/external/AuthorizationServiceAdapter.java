@@ -37,4 +37,10 @@ public class AuthorizationServiceAdapter implements AuthorizationPort {
 
         return response.getData().isAuthorization();
     }
+
+    public boolean authorizeFallback(TransferCommand command, Exception ex) {
+        log.warn("Authorization service error");
+        return false;
+    }
+
 }
