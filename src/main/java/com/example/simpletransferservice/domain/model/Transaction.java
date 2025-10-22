@@ -63,15 +63,6 @@ public class Transaction {
         transitionWithFailureReason(TransactionStatus.AUTH_DENIED, reason);
     }
 
-
-    public void authorized() {
-        transitionTo(TransactionStatus.AUTHORIZED);
-    }
-
-    public void validated() {
-        transitionTo(TransactionStatus.VALIDATING);
-    }
-
     public void failedValidation(String reason) {
         transitionWithFailureReason(TransactionStatus.FAILED, reason);
     }
@@ -86,10 +77,6 @@ public class Transaction {
 
     public void complete() {
         transitionTo(TransactionStatus.COMPLETED);
-    }
-
-    public void reverse() {
-        transitionTo(TransactionStatus.REVERSED);
     }
 
     public boolean isCompleted() {

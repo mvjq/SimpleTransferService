@@ -54,10 +54,6 @@ public class TransferService implements TransferUseCase {
         Wallet payeeWallet = walletRepository.findByUserIdWithPessimisticLocking(payee.getId())
                 .orElseThrow(() -> new UserNotFoundException("Payee wallet not found"));
 
-        // validateTransfer(...)
-        transaction.validated();
-        transactionRepository.save(transaction);
-
         try {
             boolean authorized = authorizationPort.authorize(command);
             if (!authorized) {
@@ -81,11 +77,7 @@ public class TransferService implements TransferUseCase {
             return new TransferResult();
         } catch (Exception e) {
             log.error("Transfer failed {}", e.getMessage(), e);
-            if (transaction.isCompleted()) {
-                transaction.reverse();
-            } else {
-                transaction.failProcessing(e.getMessage());
-            }
+            transaction.failProcessing(e.getMessage());
             transactionRepository.save(transaction);
             //TODO implements trasnferResult
             return new TransferResult();

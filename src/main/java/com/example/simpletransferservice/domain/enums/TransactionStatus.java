@@ -9,25 +9,19 @@ import java.util.Set;
 
 public enum TransactionStatus {
     PENDING,
-    VALIDATING,
-    AUTHORIZED,
     PROCESSING,
     COMPLETED,
     AUTH_DENIED,
-    FAILED,
-    REVERSED;
+    FAILED;
 
     private static final Map<TransactionStatus, Set<TransactionStatus>> TRANSITIONS = new HashMap<>();
 
     static {
-        TRANSITIONS.put(PENDING, Set.of(VALIDATING));
-        TRANSITIONS.put(VALIDATING, Set.of(AUTHORIZED, AUTH_DENIED));
-        TRANSITIONS.put(AUTHORIZED, Set.of(PROCESSING));
+        TRANSITIONS.put(PENDING, Set.of(PROCESSING, AUTH_DENIED));
         TRANSITIONS.put(PROCESSING, Set.of(COMPLETED, FAILED));
-        TRANSITIONS.put(COMPLETED, Set.of(REVERSED));
+        TRANSITIONS.put(COMPLETED, Set.of());
         TRANSITIONS.put(AUTH_DENIED, Set.of());
         TRANSITIONS.put(FAILED, Set.of());
-        TRANSITIONS.put(REVERSED, Set.of());
     }
 
     public Set<TransactionStatus> getPossibleTransitions() {
@@ -41,5 +35,4 @@ public enum TransactionStatus {
     public boolean isFinal() {
         return getPossibleTransitions().isEmpty();
     }
-
 }
