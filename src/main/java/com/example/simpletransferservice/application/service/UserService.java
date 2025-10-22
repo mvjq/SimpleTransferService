@@ -62,7 +62,6 @@ public class UserService implements UserUseCase {
 
             return UserResult.builder()
                     .email(updatedUser.getEmail())
-                    .password(updatedUser.getPassword())
                     .fullName(updatedUser.getFullName())
                     .documentNumber(updatedUser.getDocument())
                     .balance(wallet.getBalance())
@@ -110,7 +109,6 @@ public class UserService implements UserUseCase {
 
         return UserResult.builder()
                 .email(foundUser.getEmail())
-                .password(foundUser.getPassword())
                 .fullName(foundUser.getFullName())
                 .balance(wallet.getBalance())
                 .documentNumber(foundUser.getDocument())

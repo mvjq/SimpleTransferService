@@ -59,7 +59,6 @@ public class CommandMapper {
         return UserResponse.builder()
                 .fullName(userResult.getFullName())
                 .email(userResult.getEmail())
-                .password(userResult.getPassword())
                 .documentNumber(userResult.getDocumentNumber())
                 .initialBalance(userResult.getBalance())
                 .userType(userResult.getUserType().name())

@@ -62,7 +62,6 @@ public class TransferService implements TransferUseCase {
         Wallet payeeWallet = walletRepository.findByUserIdWithPessimisticLocking(payee.getId())
                 .orElseThrow(() -> new UserNotFoundException("Payee wallet not found"));
 
-
         if (payerWallet.getBalance().compareTo(command.getAmount()) < 0) {
             throw new InsufficientBalanceException(
                     String.format("Insufficient balance. Available: %s, Required: %s",

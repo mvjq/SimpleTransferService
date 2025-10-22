@@ -22,8 +22,6 @@ public class UserResult {
     @NotNull
     private String email;
     @NotNull
-    private String password;
-    @NotNull
     private UserType userType;
     @NotNull
     @Positive

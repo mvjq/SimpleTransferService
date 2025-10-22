@@ -15,7 +15,6 @@ public class AuthorizationServiceAdapter implements AuthorizationPort {
 
     private final RestClient restClient;
 
-    //TODO defines this url in a value
     public AuthorizationServiceAdapter(RestClient.Builder restClientBuilder) {
         this.restClient = restClientBuilder.baseUrl("https://util.devi.tools/")
                 .build();
