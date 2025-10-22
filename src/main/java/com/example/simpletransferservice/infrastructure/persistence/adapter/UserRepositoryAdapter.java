@@ -15,7 +15,6 @@ import java.util.Optional;
 public class UserRepositoryAdapter implements UserRepositoryPort {
 
     private final UserJpaRepository userJpaRepository;
-    private final WalletJpaRepository walletJpaRepository;
     private final DomainMapper domainMapper;
 
     @Override
