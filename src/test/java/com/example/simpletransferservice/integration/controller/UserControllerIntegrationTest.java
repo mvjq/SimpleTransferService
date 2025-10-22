@@ -83,6 +83,16 @@ public class UserControllerIntegrationTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$.message").value(containsString("not found")));
     }
 
+    @Test
+    @DisplayName("Should return NOT FOUND when document dont exist in database")
+    void shouldReturn404WhenUserNotFoundByDocument() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/document")
+                        .param("documentNumber", "39293399864343"))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value(containsString("not found")));
+    }
+
 
     private UserRequest createMockRequest(String email, String document) {
         return UserRequest.builder()
