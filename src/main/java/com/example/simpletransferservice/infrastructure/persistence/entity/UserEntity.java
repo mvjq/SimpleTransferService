@@ -34,9 +34,8 @@ public class UserEntity {
     @Column(name = "user_type", nullable = false)
     private String userType;
 
-    @OneToOne
-    @JoinColumn(name = "wallet_id")
-    private WalletEntity walletEntity;
+    @Column(name = "wallet_id", nullable = false)
+    private Long walledId;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

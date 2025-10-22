@@ -16,20 +16,11 @@ public class User {
     private String document;
     private String password;
     private UserType userType;
+    private Long walletId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public boolean canTransfer() {
         return this.userType == UserType.CUSTOMER;
     }
-
-    public boolean isCustomer() {
-        return this.userType == UserType.CUSTOMER;
-    }
-
-    public boolean isMerchant() {
-        return this.userType == UserType.MERCHANT;
-    }
-
-
 }

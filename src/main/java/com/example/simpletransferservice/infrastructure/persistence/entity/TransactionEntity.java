@@ -25,14 +25,9 @@ public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payer_id")
-    private UserEntity payer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payee_id")
-    private UserEntity payee;
+    // TODO if you have time, improve thsi to use relationship (if needed)
+    private Long payerId;
+    private Long payeeId;
 
     @Column(name = "amount", nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;

@@ -25,9 +25,8 @@ public class WalletEntity {
     @Column(name = "version", nullable = false)
     private Long version;
 
-    @OneToOne(cascade =  CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
-    private UserEntity userEntity;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "balance", nullable= false, precision = 19, scale = 4)
     private BigDecimal balance;

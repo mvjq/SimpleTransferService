@@ -20,6 +20,7 @@ public class Wallet {
     @DecimalMin(value = "0.00")
     private BigDecimal balance;
     private Long version;
-    private LocalDateTime createdAt;
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 }
