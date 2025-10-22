@@ -13,9 +13,10 @@ import org.springframework.transaction.IllegalTransactionStateException;
 import java.math.BigDecimal;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 
+
+@Slf4j
 @Data
 @Builder
 @NoArgsConstructor
@@ -41,6 +42,8 @@ public class Transaction {
             throw new IllegalTransactionStateException(failureReason);
         }
 
+        log.info("Transitioning transaction [{}] from status [{}] to [{}]", id, status, newStatus);
+
         this.status = newStatus;
         this.updatedAt = LocalDateTime.now();
     }
@@ -61,11 +64,11 @@ public class Transaction {
     }
 
 
-    public void authorize() {
+    public void authorized() {
         transitionTo(TransactionStatus.AUTHORIZED);
     }
 
-    public void validate() {
+    public void validated() {
         transitionTo(TransactionStatus.VALIDATING);
     }
 
@@ -89,6 +92,7 @@ public class Transaction {
         transitionTo(TransactionStatus.REVERSED);
     }
 
-    public void repo() {
+    public boolean isCompleted() {
+        return this.status == TransactionStatus.COMPLETED;
     }
 }

@@ -23,4 +23,31 @@ public class Wallet {
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
+
+    public Wallet debit(BigDecimal amount) {
+        BigDecimal newBalance = balance.subtract(amount);
+
+        return Wallet.builder()
+                .id(this.id)
+                .userId(this.userId)
+                .balance(newBalance)
+                .version(this.version)
+                .createdAt(this.createdAt)
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    public Wallet credit(BigDecimal amount) {
+        BigDecimal newBalance = balance.add(amount);
+
+        return Wallet.builder()
+                .id(this.id)
+                .userId(this.userId)
+                .balance(newBalance)
+                .version(this.version)
+                .createdAt(this.createdAt)
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
 }
