@@ -4,6 +4,7 @@ import com.example.simpletransferservice.application.command.TransferCommand;
 import com.example.simpletransferservice.application.port.in.TransferResult;
 import com.example.simpletransferservice.domain.DomainMapper;
 import com.example.simpletransferservice.domain.enums.UserType;
+import com.example.simpletransferservice.domain.event.TransactionCompletedEvent;
 import com.example.simpletransferservice.domain.exception.InsufficientBalanceException;
 import com.example.simpletransferservice.domain.exception.UserNotFoundException;
 import com.example.simpletransferservice.domain.model.Transaction;
@@ -83,7 +84,7 @@ public class TransferServiceTest {
         TransferResult result = transferService.transfer(command);
 
         assertTrue(result.isSuccess());
-        // verify(eventPublisher, times(1)).publishEvent(any());
+        verify(eventPublisher, times(1)).publishEvent(any(TransactionCompletedEvent.class));
         verify(walletRepository, times(2)).save(any(Wallet.class));
     }
 

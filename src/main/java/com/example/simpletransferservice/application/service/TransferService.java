@@ -3,6 +3,7 @@ package com.example.simpletransferservice.application.service;
 import com.example.simpletransferservice.application.command.TransferCommand;
 import com.example.simpletransferservice.application.port.in.TransferResult;
 import com.example.simpletransferservice.application.port.in.TransferUseCase;
+import com.example.simpletransferservice.domain.event.TransactionCompletedEvent;
 import com.example.simpletransferservice.domain.exception.InsufficientBalanceException;
 import com.example.simpletransferservice.domain.port.out.AuthorizationPort;
 import com.example.simpletransferservice.domain.port.out.TransactionRepositoryPort;
@@ -15,6 +16,7 @@ import com.example.simpletransferservice.domain.model.User;
 import com.example.simpletransferservice.domain.model.Wallet;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -28,13 +30,15 @@ public class TransferService implements TransferUseCase {
     private final TransactionRepositoryPort transactionRepository;
     private final AuthorizationPort authorizationPort;
     private final DomainMapper domainMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public TransferService(UserRepositoryPort userRepository, WalletRepositoryPort walletRepository, TransactionRepositoryPort transactionRepository, AuthorizationPort authorizationPort, DomainMapper domainMapper) {
+    public TransferService(UserRepositoryPort userRepository, WalletRepositoryPort walletRepository, TransactionRepositoryPort transactionRepository, AuthorizationPort authorizationPort, DomainMapper domainMapper, ApplicationEventPublisher applicationEventPublisher) {
         this.userRepository = userRepository;
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
         this.authorizationPort = authorizationPort;
         this.domainMapper = domainMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -90,6 +94,8 @@ public class TransferService implements TransferUseCase {
             transactionRepository.save(transaction);
             log.info("Transfer authorized for transaction id {}", transaction.getId());
 
+            publishEvent(transaction, payer, payee, command.getValue());
+
             return getTransferResult(command, "Transfer completed successfully", transaction, payee, payer, true);
 
         } catch (Exception e) {
@@ -127,5 +133,25 @@ public class TransferService implements TransferUseCase {
 
         walletRepository.save(newPayerWallet);
         walletRepository.save(newPayeeWallet);
+    }
+
+    private void publishEvent(Transaction transaction, User payer, User payee, BigDecimal value) {
+        try {
+            TransactionCompletedEvent event = TransactionCompletedEvent.builder()
+                    .transactionId(transaction.getId())
+                    .payerId(payer.getId())
+                    .payerName(payer.getFullName())
+                    .payerEmail(payer.getEmail())
+                    .payeeId(payee.getId())
+                    .payeeName(payee.getFullName())
+                    .payeeEmail(payee.getEmail())
+                    .amount(value)
+                    .build();
+
+            applicationEventPublisher.publishEvent(event);
+            log.info("Notify event fired for transaction id {}", transaction.getId());
+        } catch (Exception ex) {
+            log.error("Error while firing notify event {} for transaction", ex, transaction.getId());
+        }
     }
 }

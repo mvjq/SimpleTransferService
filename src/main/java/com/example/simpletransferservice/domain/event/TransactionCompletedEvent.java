@@ -22,5 +22,4 @@ public class TransactionCompletedEvent {
     private String payeeName;
     private String payeeEmail;
     private BigDecimal amount;
-    private LocalDateTime completedAt;
 }
