@@ -207,7 +207,7 @@ public class TransferServiceTest {
                 .id(1L)
                 .payerId(1L)
                 .payeeId(2L)
-                .amount(new BigDecimal("150.00"))
+                .value(new BigDecimal("150.00"))
                 .build();
     }
 }

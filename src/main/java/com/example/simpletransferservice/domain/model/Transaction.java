@@ -24,7 +24,7 @@ public class Transaction {
     private Long payerId;
     private Long payeeId;
     @DecimalMin(value = "0.01")
-    private BigDecimal amount;
+    private BigDecimal value;
     @Builder.Default
     private TransactionStatus status = TransactionStatus.PENDING;
     private String failureReason;

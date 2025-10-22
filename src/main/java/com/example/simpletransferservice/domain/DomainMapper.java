@@ -20,7 +20,7 @@ public class DomainMapper {
         return Transaction.builder()
                 .payerId(command.getPayerId())
                 .payeeId(command.getPayeeId())
-                .amount(command.getValue())
+                .value(command.getValue())
                 .build();
     }
 
@@ -29,7 +29,7 @@ public class DomainMapper {
                 .id(transactionEntity.getId())
                 .payerId(transactionEntity.getPayerId())
                 .payeeId(transactionEntity.getPayeeId())
-                .amount(transactionEntity.getAmount())
+                .value(transactionEntity.getValue())
                 .status(TransactionStatus.valueOf(transactionEntity.getStatus()))
                 .failureReason(transactionEntity.getFailureReason())
                 .createdAt(transactionEntity.getCreatedAt())
@@ -43,7 +43,7 @@ public class DomainMapper {
                 .id(domainTransaction.getId())
                 .payerId(domainTransaction.getPayerId())
                 .payeeId(domainTransaction.getPayeeId())
-                .amount(domainTransaction.getAmount())
+                .value(domainTransaction.getValue())
                 .status(domainTransaction.getStatus().toString())
                 .failureReason(domainTransaction.getFailureReason())
                 .createdAt(domainTransaction.getCreatedAt())

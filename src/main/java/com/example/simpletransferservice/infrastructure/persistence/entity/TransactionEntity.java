@@ -26,8 +26,8 @@ public class TransactionEntity {
     private Long payerId;
     private Long payeeId;
 
-    @Column(name = "amount", nullable = false, precision = 19, scale = 2)
-    private BigDecimal amount;
+    @Column(name = "value", nullable = false, precision = 19, scale = 2)
+    private BigDecimal value;
 
     @Column(name = "status", nullable = false)
     private String status;
