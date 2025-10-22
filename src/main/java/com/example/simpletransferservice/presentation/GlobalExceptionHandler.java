@@ -39,19 +39,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InsufficientBalanceException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ResponseEntity<Map<String, Object>> handleInsufficientBalanceException(
-            UserNotFoundException ex,
+            InsufficientBalanceException ex,
             WebRequest request) {
 
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.CONFLICT.value());
-        body.put("error", HttpStatus.CONFLICT.getReasonPhrase());
+        body.put("status", HttpStatus.UNPROCESSABLE_ENTITY.value());
+        body.put("error", HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase());
         body.put("message", ex.getMessage());
         body.put("path", request.getDescription(false).replace("uri=", ""));
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
     }
 
 

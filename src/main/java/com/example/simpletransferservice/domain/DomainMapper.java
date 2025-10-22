@@ -82,7 +82,7 @@ public class DomainMapper {
                 .email(userEntity.getEmail())
                 .password(userEntity.getPassword())
                 .userType(UserType.valueOf(userEntity.getUserType()))
-                .walletId(userEntity.getWalledId())
+                .walletId(userEntity.getWalletId())
                 .createdAt(userEntity.getCreatedAt())
                 .updatedAt(userEntity.getUpdatedAt())
                 .build();
@@ -97,7 +97,7 @@ public class DomainMapper {
                 .email(domainUser.getEmail())
                 .password(domainUser.getPassword())
                 .userType(domainUser.getUserType().toString())
-                .walledId(domainUser.getWalletId())
+                .walletId(domainUser.getWalletId())
                 .createdAt(domainUser.getCreatedAt())
                 .updatedAt(domainUser.getUpdatedAt())
                 .build();

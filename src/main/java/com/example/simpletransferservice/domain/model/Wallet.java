@@ -1,5 +1,6 @@
 package com.example.simpletransferservice.domain.model;
 
+import com.example.simpletransferservice.domain.exception.InsufficientBalanceException;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,7 @@ public class Wallet {
         BigDecimal newBalance = balance.subtract(amount);
 
         if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
-             throw new IllegalArgumentException("Insufficient funds in wallet");
+             throw new InsufficientBalanceException("Insufficient funds in wallet");
         }
 
         return Wallet.builder()
@@ -42,6 +43,11 @@ public class Wallet {
     }
 
     public Wallet credit(BigDecimal amount) {
+
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0 ) {
+            throw new IllegalArgumentException("Credit amount must be positive");
+        }
+
         BigDecimal newBalance = balance.add(amount);
 
         return Wallet.builder()
@@ -53,5 +59,6 @@ public class Wallet {
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
+
 
 }
