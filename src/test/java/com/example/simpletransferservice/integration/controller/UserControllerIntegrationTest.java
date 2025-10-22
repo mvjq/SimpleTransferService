@@ -64,7 +64,6 @@ public class UserControllerIntegrationTest extends IntegrationTestBase {
 
         UserRequest duplicateEmail = createMockRequest(MAIL, DOCUMENT_NUMBER);
 
-        // Then
         mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(duplicateEmail)))
