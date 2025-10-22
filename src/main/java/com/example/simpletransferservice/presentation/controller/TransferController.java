@@ -38,6 +38,8 @@ public class TransferController {
 
         TransferResponse transferResponse = commandMapper.toResponse(result);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(transferResponse);
+        HttpStatus status = result.isSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST;
+
+        return ResponseEntity.status(status).body(transferResponse);
     }
 }

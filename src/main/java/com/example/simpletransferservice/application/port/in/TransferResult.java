@@ -19,4 +19,5 @@ public class TransferResult {
     private BigDecimal amount;
     private String status;
     private String message;
+    private boolean success;
 }

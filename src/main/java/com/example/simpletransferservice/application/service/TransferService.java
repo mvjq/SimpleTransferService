@@ -34,7 +34,6 @@ public class TransferService implements TransferUseCase {
         this.domainMapper = domainMapper;
     }
 
-
     @Override
     @Transactional
     public TransferResult transfer(TransferCommand command) {
@@ -66,6 +65,7 @@ public class TransferService implements TransferUseCase {
                         .message("Transfer not authorized")
                         .status(transaction.getStatus().toString())
                         .amount(command.getAmount())
+                        .success(false)
                         .build();
             }
             transaction.process();
@@ -88,6 +88,7 @@ public class TransferService implements TransferUseCase {
                     .message("Transfer completed successfully")
                     .status(transaction.getStatus().toString())
                     .amount(command.getAmount())
+                    .success(true)
                     .build();
         } catch (Exception e) {
             log.error("Transfer failed {}", e.getMessage(), e);
@@ -101,12 +102,8 @@ public class TransferService implements TransferUseCase {
                     .message(e.getMessage())
                     .status(transaction.getStatus().toString())
                     .amount(command.getAmount())
+                    .success(false)
                     .build();
         }
-    }
-
-    //TODO implements this to debit/credit and save repository
-    public void revertTransfer() {
-
     }
 }

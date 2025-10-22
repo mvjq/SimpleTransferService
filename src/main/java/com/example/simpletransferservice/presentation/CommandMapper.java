@@ -17,7 +17,7 @@ public class CommandMapper {
         return TransferCommand.builder()
                 .payerId(request.getPayerId())
                 .payeeId(request.getPayeeId())
-                .amount(BigDecimal.valueOf(request.getAmount()))
+                .amount(request.getAmount())
                 .build();
     }
 
@@ -25,7 +25,7 @@ public class CommandMapper {
         return TransferRequest.builder()
                 .payerId(command.getPayerId())
                 .payeeId(command.getPayeeId())
-                .amount(command.getAmount().doubleValue())
+                .amount(BigDecimal.valueOf(command.getAmount().doubleValue()))
                 .build();
     }
 
