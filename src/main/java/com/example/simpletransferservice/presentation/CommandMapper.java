@@ -38,7 +38,7 @@ public class CommandMapper {
         return TransferResponse.builder()
                 .payerId(result.getPayerId())
                 .payeeId(result.getPayeeId())
-                .value(result.getAmount())
+                .value(result.getValue())
                 .status(result.getStatus())
                 .message(result.getMessage())
                 .build();

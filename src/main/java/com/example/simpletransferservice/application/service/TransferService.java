@@ -45,7 +45,7 @@ public class TransferService implements TransferUseCase {
     @Transactional
     public TransferResult transfer(TransferCommand command) {
 
-        log.info("Starting transfer from user {} to user {} amount {}",
+        log.info("Starting transfer from user {} to user {} value {}",
                 command.getPayerId(), command.getPayeeId(), command.getValue());
 
         if (command.getPayeeId().equals(command.getPayerId())) {
@@ -122,14 +122,14 @@ public class TransferService implements TransferUseCase {
                 .payerId(payer.getId())
                 .message(message)
                 .status(transaction.getStatus().toString())
-                .amount(command.getValue())
+                .value(command.getValue())
                 .success(success)
                 .build();
     }
 
-    private void revertWallet(Wallet payerWallet, Wallet payeeWallet, BigDecimal amount) {
-        var newPayerWallet = payerWallet.credit(amount);
-        var newPayeeWallet = payeeWallet.debit(amount);
+    private void revertWallet(Wallet payerWallet, Wallet payeeWallet, BigDecimal value) {
+        var newPayerWallet = payerWallet.credit(value);
+        var newPayeeWallet = payeeWallet.debit(value);
 
         walletRepository.save(newPayerWallet);
         walletRepository.save(newPayeeWallet);
@@ -145,7 +145,7 @@ public class TransferService implements TransferUseCase {
                     .payeeId(payee.getId())
                     .payeeName(payee.getFullName())
                     .payeeEmail(payee.getEmail())
-                    .amount(value)
+                    .value(value)
                     .build();
 
             applicationEventPublisher.publishEvent(event);

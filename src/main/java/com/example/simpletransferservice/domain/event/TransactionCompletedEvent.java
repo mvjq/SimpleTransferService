@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -21,5 +20,5 @@ public class TransactionCompletedEvent {
     private Long payeeId;
     private String payeeName;
     private String payeeEmail;
-    private BigDecimal amount;
+    private BigDecimal value;
 }

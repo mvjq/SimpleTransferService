@@ -136,7 +136,7 @@ public class TransferServiceTest {
     void shouldThrowExceptionWhenInsufficientBalance() {
         Wallet poorWallet = Wallet.builder()
                 .userId(1L)
-                .balance(new BigDecimal("50.00")) // Less than transfer amount
+                .balance(new BigDecimal("50.00")) 
                 .build();
 
         when(domainMapper.toDomain(command)).thenReturn(transaction);

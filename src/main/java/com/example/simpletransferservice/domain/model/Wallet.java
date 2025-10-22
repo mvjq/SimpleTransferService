@@ -25,8 +25,8 @@ public class Wallet {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt;
 
-    public Wallet debit(BigDecimal amount) {
-        BigDecimal newBalance = balance.subtract(amount);
+    public Wallet debit(BigDecimal value) {
+        BigDecimal newBalance = balance.subtract(value);
 
         if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
              throw new InsufficientBalanceException("Insufficient funds in wallet");
@@ -42,13 +42,13 @@ public class Wallet {
                 .build();
     }
 
-    public Wallet credit(BigDecimal amount) {
+    public Wallet credit(BigDecimal value) {
 
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0 ) {
-            throw new IllegalArgumentException("Credit amount must be positive");
+        if (value == null || value.compareTo(BigDecimal.ZERO) < 0 ) {
+            throw new IllegalArgumentException("Credit value must be positive");
         }
 
-        BigDecimal newBalance = balance.add(amount);
+        BigDecimal newBalance = balance.add(value);
 
         return Wallet.builder()
                 .id(this.id)

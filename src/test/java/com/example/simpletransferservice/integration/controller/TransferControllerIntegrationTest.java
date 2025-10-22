@@ -181,8 +181,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
     }
 
     @Test
-    @DisplayName("Should return 400 when amount is zero or negative")
-    void shouldReturn400WhenInvalidAmount() throws Exception {
+    @DisplayName("Should return 400 when value is zero or negative")
+    void shouldReturn400WhenInvalidValue() throws Exception {
         // Given
         Long payerId = createIntegrationuser(PAYER_EMAIL, "10101010101",
                 UserType.CUSTOMER, new BigDecimal("1000.00"));

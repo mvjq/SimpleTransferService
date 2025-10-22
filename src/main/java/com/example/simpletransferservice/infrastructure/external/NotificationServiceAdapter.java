@@ -25,8 +25,8 @@ public class NotificationServiceAdapter implements NotificationPort {
         log.info("Sending notification for transaction: {}", transactionCompletedEvent);
 
         try {
-            postNotification(transactionCompletedEvent.getPayeeEmail(), "Your transfer of " + transactionCompletedEvent.getAmount() + " has been completed.");
-            postNotification(transactionCompletedEvent.getPayerEmail(), "Your transfer of " + transactionCompletedEvent.getAmount() + " has been completed.");
+            postNotification(transactionCompletedEvent.getPayeeEmail(), "Your transfer of " + transactionCompletedEvent.getValue() + " has been completed.");
+            postNotification(transactionCompletedEvent.getPayerEmail(), "Your transfer of " + transactionCompletedEvent.getValue() + " has been completed.");
         } catch (Exception e) {
             log.error("Failed to send notification for transaction: {}", transactionCompletedEvent, e);
         }
