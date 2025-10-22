@@ -42,7 +42,7 @@ public class TransferService implements TransferUseCase {
     public TransferResult transfer(TransferCommand command) {
 
         log.info("Starting transfer from user {} to user {} amount {}",
-                command.getPayerId(), command.getPayeeId(), command.getAmount());
+                command.getPayerId(), command.getPayeeId(), command.getValue());
 
         if (command.getPayeeId().equals(command.getPayerId())) {
             throw new IllegalArgumentException("Payee IDs must be different from payee IDs");
@@ -64,10 +64,10 @@ public class TransferService implements TransferUseCase {
         Wallet payeeWallet = walletRepository.findByUserIdWithPessimisticLocking(payee.getId())
                 .orElseThrow(() -> new UserNotFoundException("Payee wallet not found"));
 
-        if (payerWallet.getBalance().compareTo(command.getAmount()) < 0) {
+        if (payerWallet.getBalance().compareTo(command.getValue()) < 0) {
             throw new InsufficientBalanceException(
                     String.format("Insufficient balance. Available: %s, Required: %s",
-                            payerWallet.getBalance(), command.getAmount())
+                            payerWallet.getBalance(), command.getValue())
             );
         }
 
@@ -80,8 +80,8 @@ public class TransferService implements TransferUseCase {
             transaction.process();
             transactionRepository.save(transaction);
 
-            var newPayerWallet = payerWallet.debit(command.getAmount());
-            var newPayeeWallet = payeeWallet.credit(command.getAmount());
+            var newPayerWallet = payerWallet.debit(command.getValue());
+            var newPayeeWallet = payeeWallet.credit(command.getValue());
 
             walletRepository.save(newPayerWallet);
             walletRepository.save(newPayeeWallet);
@@ -97,7 +97,7 @@ public class TransferService implements TransferUseCase {
 
             if (transaction.getStatus().isCompleted()) {
                 transaction.reverse(e.getMessage());
-                revertWallet(payerWallet, payeeWallet, command.getAmount());
+                revertWallet(payerWallet, payeeWallet, command.getValue());
             } else {
                 transaction.failProcessing(e.getMessage());
             }
@@ -116,7 +116,7 @@ public class TransferService implements TransferUseCase {
                 .payerId(payer.getId())
                 .message(message)
                 .status(transaction.getStatus().toString())
-                .amount(command.getAmount())
+                .amount(command.getValue())
                 .success(success)
                 .build();
     }

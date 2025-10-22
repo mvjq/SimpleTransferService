@@ -15,7 +15,7 @@ public class TransferResponse {
     private long transactionId;
     private Long payerId;
     private Long payeeId;
-    private BigDecimal amount;
+    private BigDecimal value;
     private String status;
     private String message;
 }
