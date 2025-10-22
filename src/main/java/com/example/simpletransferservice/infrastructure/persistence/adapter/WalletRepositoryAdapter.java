@@ -34,7 +34,7 @@ public class WalletRepositoryAdapter implements WalletRepositoryPort {
     @Override
     @Transactional
     public Optional<Wallet> findByUserIdWithPessimisticLocking(Long id) {
-        return walletJpaRepository.findByUserIdWithPessimisticLocking(id)
+        return walletJpaRepository.findByUserIdForUpdate(id)
                 .map(domainMapper::toDomain);
     }
 }
