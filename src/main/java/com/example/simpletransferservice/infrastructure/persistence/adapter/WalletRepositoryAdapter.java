@@ -16,7 +16,6 @@ public class WalletRepositoryAdapter implements WalletRepositoryPort {
     private final DomainMapper domainMapper;
     private final WalletJpaRepository walletJpaRepository;
 
-
     @Override
     public Wallet save(Wallet wallet) {
         var entity = domainMapper.toEntity(wallet);
@@ -25,8 +24,8 @@ public class WalletRepositoryAdapter implements WalletRepositoryPort {
     }
 
     @Override
-    public Optional<Wallet> findById(Long id) {
-        return walletJpaRepository.findById(id)
+    public Optional<Wallet> findByUserId(Long id) {
+        return walletJpaRepository.findByUserId(id)
                 .map(domainMapper::toDomain);
     }
 }

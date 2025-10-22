@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface WalletRepositoryPort {
     Wallet save(Wallet wallet);
-    Optional<Wallet> findById(Long id);
+    Optional<Wallet> findByUserId(Long id);
 }

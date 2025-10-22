@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@Slf4j
+
 @Data
 @Builder
 @NoArgsConstructor

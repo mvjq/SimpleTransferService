@@ -46,6 +46,7 @@ public class TransferService implements TransferUseCase {
             // add failure reason
             // end flow
             transaction.failedAuthorization("Failed authorization");
+            return new TransferResult();
         }
 
         transaction.authorize();
@@ -60,6 +61,7 @@ public class TransferService implements TransferUseCase {
 
             // validation
 //             if (payer.canTransfer() && payer.)
+            if (payer.canTransfer() && )
 
             // debit payer wallet
             // credit payee wallet
