@@ -26,7 +26,6 @@ USER spring:spring
 
 EXPOSE 8080
 
-# JVM Options for containerized environment
 ENV JAVA_OPTS="\
   -XX:+UseContainerSupport \
   -XX:MaxRAMPercentage=75.0 \
