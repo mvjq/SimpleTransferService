@@ -12,6 +12,7 @@ public enum TransactionStatus {
     PROCESSING,
     COMPLETED,
     AUTH_DENIED,
+    REVERSED,
     FAILED;
 
     private static final Map<TransactionStatus, Set<TransactionStatus>> TRANSITIONS = new HashMap<>();
@@ -19,9 +20,10 @@ public enum TransactionStatus {
     static {
         TRANSITIONS.put(PENDING, Set.of(PROCESSING, AUTH_DENIED));
         TRANSITIONS.put(PROCESSING, Set.of(COMPLETED, FAILED));
-        TRANSITIONS.put(COMPLETED, Set.of());
+        TRANSITIONS.put(COMPLETED, Set.of(REVERSED));
         TRANSITIONS.put(AUTH_DENIED, Set.of());
         TRANSITIONS.put(FAILED, Set.of());
+        TRANSITIONS.put(REVERSED, Set.of());
     }
 
     public Set<TransactionStatus> getPossibleTransitions() {
@@ -34,5 +36,9 @@ public enum TransactionStatus {
 
     public boolean isFinal() {
         return getPossibleTransitions().isEmpty();
+    }
+
+    public boolean isCompleted() {
+        return this == COMPLETED;
     }
 }

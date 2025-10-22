@@ -1,20 +1,17 @@
 package com.example.simpletransferservice.domain.model;
 
-
 import com.example.simpletransferservice.domain.enums.TransactionStatus;
+import com.example.simpletransferservice.domain.exception.IlegalTransitionStateException;
 import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.IllegalTransactionStateException;
 
 import java.math.BigDecimal;
 
 import java.time.LocalDateTime;
-
-
 
 @Slf4j
 @Data
@@ -39,7 +36,7 @@ public class Transaction {
     public void transitionTo(TransactionStatus newStatus) {
         if (!status.canTransitionTo(newStatus)) {
             failureReason = String.format("Invalid status transition from %s to %s", status, newStatus);
-            throw new IllegalTransactionStateException(failureReason);
+            throw new IlegalTransitionStateException(failureReason);
         }
 
         log.info("Transitioning transaction [{}] from status [{}] to [{}]", id, status, newStatus);
@@ -51,7 +48,7 @@ public class Transaction {
     public void transitionWithFailureReason(TransactionStatus newStatus, String reason) {
         if (!status.canTransitionTo(newStatus)) {
             failureReason = String.format("Invalid status transition from [%s] -> [%s]", status, newStatus);
-            throw new IllegalTransactionStateException(failureReason);
+            throw new IlegalTransitionStateException(failureReason);
         }
 
         log.info("Transitioning transaction [{}] from status [{}] to [{}] with failure reason {}", id, status,
@@ -80,6 +77,10 @@ public class Transaction {
 
     public void complete() {
         transitionTo(TransactionStatus.COMPLETED);
+    }
+
+    public void reverse(String reason) {
+        transitionWithFailureReason(TransactionStatus.REVERSED, reason);
     }
 
     public boolean isCompleted() {

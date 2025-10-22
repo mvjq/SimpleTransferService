@@ -17,6 +17,8 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @Component
 public class TransferService implements TransferUseCase {
@@ -73,15 +75,7 @@ public class TransferService implements TransferUseCase {
             boolean authorized = authorizationPort.authorize(command);
             if (!authorized) {
                 transaction.failedAuthorization("Failed authorization");
-                return TransferResult.builder()
-                        .transactionId(transaction.getId())
-                        .payeeId(payee.getId())
-                        .payerId(payer.getId())
-                        .message("Transfer not authorized")
-                        .status(transaction.getStatus().toString())
-                        .amount(command.getAmount())
-                        .success(false)
-                        .build();
+                return getTransferResult(command, "Transfer not authorized", transaction, payee, payer, false);
             }
             transaction.process();
             transactionRepository.save(transaction);
@@ -96,29 +90,42 @@ public class TransferService implements TransferUseCase {
             transactionRepository.save(transaction);
             log.info("Transfer authorized for transaction id {}", transaction.getId());
 
-            return TransferResult.builder()
-                    .transactionId(transaction.getId())
-                    .payeeId(payee.getId())
-                    .payerId(payer.getId())
-                    .message("Transfer completed successfully")
-                    .status(transaction.getStatus().toString())
-                    .amount(command.getAmount())
-                    .success(true)
-                    .build();
+            return getTransferResult(command, "Transfer completed successfully", transaction, payee, payer, true);
+
         } catch (Exception e) {
             log.error("Transfer failed {}", e.getMessage(), e);
-            transaction.failProcessing(e.getMessage());
+
+            if (transaction.getStatus().isCompleted()) {
+                transaction.reverse(e.getMessage());
+                revertWallet(payerWallet, payeeWallet, command.getAmount());
+            } else {
+                transaction.failProcessing(e.getMessage());
+            }
+
             transactionRepository.save(transaction);
 
-            return TransferResult.builder()
-                    .transactionId(transaction.getId())
-                    .payeeId(payee.getId())
-                    .payerId(payer.getId())
-                    .message(e.getMessage())
-                    .status(transaction.getStatus().toString())
-                    .amount(command.getAmount())
-                    .success(false)
-                    .build();
+            return getTransferResult(command, e.getMessage(), transaction, payee, payer, false);
         }
+    }
+
+    private static TransferResult getTransferResult(TransferCommand command, String message,
+                                                    Transaction transaction, User payee, User payer, Boolean success) {
+        return TransferResult.builder()
+                .transactionId(transaction.getId())
+                .payeeId(payee.getId())
+                .payerId(payer.getId())
+                .message(message)
+                .status(transaction.getStatus().toString())
+                .amount(command.getAmount())
+                .success(success)
+                .build();
+    }
+
+    private void revertWallet(Wallet payerWallet, Wallet payeeWallet, BigDecimal amount) {
+        var newPayerWallet = payerWallet.credit(amount);
+        var newPayeeWallet = payeeWallet.debit(amount);
+
+        walletRepository.save(newPayerWallet);
+        walletRepository.save(newPayeeWallet);
     }
 }
