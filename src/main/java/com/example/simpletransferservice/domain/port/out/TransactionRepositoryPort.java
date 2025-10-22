@@ -1,4 +1,4 @@
-package com.example.simpletransferservice.application.port.out;
+package com.example.simpletransferservice.domain.port.out;
 
 import com.example.simpletransferservice.domain.model.Transaction;
 

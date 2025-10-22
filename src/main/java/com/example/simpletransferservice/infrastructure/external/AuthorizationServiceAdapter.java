@@ -1,17 +1,13 @@
 package com.example.simpletransferservice.infrastructure.external;
 
 import com.example.simpletransferservice.application.command.TransferCommand;
-import com.example.simpletransferservice.application.port.out.AuthorizationPort;
+import com.example.simpletransferservice.domain.port.out.AuthorizationPort;
 import com.example.simpletransferservice.infrastructure.external.dto.AuthorizationResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
-import javax.swing.text.StyledEditorKit;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -24,7 +20,6 @@ public class AuthorizationServiceAdapter implements AuthorizationPort {
         this.restClient = restClientBuilder.baseUrl("https://util.devi.tools/")
                 .build();
     }
-
 
     @Override
     @CircuitBreaker(name = "authorizationServiceCircuitBreaker", fallbackMethod = "authorizeFallback")

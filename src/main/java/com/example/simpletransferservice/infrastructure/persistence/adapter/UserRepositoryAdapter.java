@@ -1,12 +1,11 @@
 package com.example.simpletransferservice.infrastructure.persistence.adapter;
 
-import com.example.simpletransferservice.application.port.out.UserRepositoryPort;
+import com.example.simpletransferservice.domain.port.out.UserRepositoryPort;
 import com.example.simpletransferservice.domain.DomainMapper;
 import com.example.simpletransferservice.domain.model.User;
 import com.example.simpletransferservice.infrastructure.persistence.repository.UserJpaRepository;
 import com.example.simpletransferservice.infrastructure.persistence.repository.WalletJpaRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

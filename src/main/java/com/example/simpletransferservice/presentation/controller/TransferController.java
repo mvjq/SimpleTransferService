@@ -8,7 +8,6 @@ import com.example.simpletransferservice.presentation.CommandMapper;
 import com.example.simpletransferservice.presentation.dto.TransferRequest;
 import com.example.simpletransferservice.presentation.dto.TransferResponse;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

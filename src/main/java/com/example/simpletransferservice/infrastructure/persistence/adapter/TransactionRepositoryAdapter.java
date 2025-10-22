@@ -1,6 +1,6 @@
 package com.example.simpletransferservice.infrastructure.persistence.adapter;
 
-import com.example.simpletransferservice.application.port.out.TransactionRepositoryPort;
+import com.example.simpletransferservice.domain.port.out.TransactionRepositoryPort;
 import com.example.simpletransferservice.domain.DomainMapper;
 import com.example.simpletransferservice.domain.model.Transaction;
 import com.example.simpletransferservice.infrastructure.persistence.repository.TransactionJpaRepository;
