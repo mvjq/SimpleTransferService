@@ -37,7 +37,7 @@ public class Transaction {
 
 
     public void transitionTo(TransactionStatus newStatus) {
-        if (status.canTransitionTo(newStatus)) {
+        if (!status.canTransitionTo(newStatus)) {
             failureReason = String.format("Invalid status transition from %s to %s", status, newStatus);
             throw new IllegalTransactionStateException(failureReason);
         }
@@ -53,6 +53,9 @@ public class Transaction {
             failureReason = String.format("Invalid status transition from [%s] -> [%s]", status, newStatus);
             throw new IllegalTransactionStateException(failureReason);
         }
+
+        log.info("Transitioning transaction [{}] from status [{}] to [{}] with failure reason {}", id, status,
+                newStatus, failureReason);
 
         this.status = newStatus;
         this.failureReason = reason;

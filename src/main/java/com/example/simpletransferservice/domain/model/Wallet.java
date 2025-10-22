@@ -27,6 +27,10 @@ public class Wallet {
     public Wallet debit(BigDecimal amount) {
         BigDecimal newBalance = balance.subtract(amount);
 
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+             throw new IllegalArgumentException("Insufficient funds in wallet");
+        }
+
         return Wallet.builder()
                 .id(this.id)
                 .userId(this.userId)

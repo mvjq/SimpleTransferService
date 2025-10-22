@@ -29,8 +29,13 @@ public class CommandMapper {
                 .build();
     }
 
-// TODO implement result
     public TransferResponse toResponse(TransferResult result) {
-        return TransferResponse.builder().build();
+        return TransferResponse.builder()
+                .payerId(result.getPayerId())
+                .payeeId(result.getPayeeId())
+                .amount(result.getAmount())
+                .status(result.getStatus())
+                .message(result.getMessage())
+                .build();
     }
 }

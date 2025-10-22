@@ -46,7 +46,7 @@ public class TransferService implements TransferUseCase {
 
         User payer = userRepository.findById(command.getPayerId()).orElseThrow(
                 () -> new UserNotFoundException("Payer not found"));
-        User payee = userRepository.findById(command.getPayerId()).orElseThrow(
+        User payee = userRepository.findById(command.getPayeeId()).orElseThrow(
                 () -> new UserNotFoundException("Payee not found"));
 
         Wallet payerWallet = walletRepository.findByUserIdWithPessimisticLocking(payer.getId())
@@ -59,7 +59,14 @@ public class TransferService implements TransferUseCase {
             if (!authorized) {
                 transaction.failedAuthorization("Failed authorization");
                 // TODO return valid trasnferResult
-                return new TransferResult();
+                return TransferResult.builder()
+                        .transactionId(transaction.getId())
+                        .payeeId(payee.getId())
+                        .payerId(payer.getId())
+                        .message("Transfer not authorized")
+                        .status(transaction.getStatus().toString())
+                        .amount(command.getAmount())
+                        .build();
             }
             transaction.process();
             transactionRepository.save(transaction);
@@ -73,14 +80,28 @@ public class TransferService implements TransferUseCase {
             transaction.complete();
             transactionRepository.save(transaction);
             log.info("Transfer authorized for transaction id {}", transaction.getId());
-            // TODO implement transferResult
-            return new TransferResult();
+
+            return TransferResult.builder()
+                    .transactionId(transaction.getId())
+                    .payeeId(payee.getId())
+                    .payerId(payer.getId())
+                    .message("Transfer completed successfully")
+                    .status(transaction.getStatus().toString())
+                    .amount(command.getAmount())
+                    .build();
         } catch (Exception e) {
             log.error("Transfer failed {}", e.getMessage(), e);
             transaction.failProcessing(e.getMessage());
             transactionRepository.save(transaction);
-            //TODO implements trasnferResult
-            return new TransferResult();
+
+            return TransferResult.builder()
+                    .transactionId(transaction.getId())
+                    .payeeId(payee.getId())
+                    .payerId(payer.getId())
+                    .message(e.getMessage())
+                    .status(transaction.getStatus().toString())
+                    .amount(command.getAmount())
+                    .build();
         }
     }
 
