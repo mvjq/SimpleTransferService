@@ -236,7 +236,7 @@ Para gerenciar o estado das transacoes, utilizamos uma maquina de estado simples
 
 Temos a seguinte modelagem de dados:
 
-```mermaid
+```text
     USERS {
         bigint id PK "Auto-increment primary key"
         varchar full_name "Nome completo do usuário"
