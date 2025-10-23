@@ -1,29 +1,39 @@
 # Simple Transfer Service
 
-# Overview
+## 📋 Índice
 
-- [Visão Geral](#-visão-geral)
-- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-- [Funcionalidades](#-funcionalidades)
-- [Instalação e Execução](#-instalação-e-execução)
-- [API Endpoints](#-api-endpoints)
-- [Arquitetura](#-arquitetura)
-    - [Motivações e Decisões](#motivações-e-decisões-arquiteturais)
-    - [Diagramas](#diagramas)
-    - [Design Patterns Utilizados](#design-patterns-utilizados)
-    - [Controle de Concorrência](#-controle-de-concorrência)
-- [Decisões Técnicas](#-decisões-técnicas-adrs)
-- [Máquina de Estados](#-máquina-de-estados-de-transações)
-- [Testes](#-testes)
-- [Melhorias Futuras](#-melhorias-futuras)
+- [Visão Geral](#visao-geral)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Instalação e Execução](#instalacao-e-execucao)
+- [API Endpoints](#api-endpoints)
+  - [Exemplos de Chamadas](#exemplos-de-chamadas)
+  - [Validações](#validacoes)
+- [Arquitetura](#arquitetura)
+  - [Estudo do Problema e Arquitetura](#estudo-do-problema-e-arquitetura)
+  - [Motivação e Decisões Arquiteturais](#motivacao-e-decisoes-arquiteturais)
+  - [Diagramas](#diagramas)
+  - [Máquina de Estado](#maquina-de-estado)
+  - [Modelagem de Dados](#modelagem-de-dados)
+  - [Design Patterns Utilizados](#design-patterns-utilizados)
+  - [Controle de Concorrência](#controle-de-concorrencia)
+    - [Pessimistic Locking](#pessimistic-locking)
+    - [Implementação e Alternativas](#implementacao-e-alternativas)
+- [Melhorias Futuras](#melhorias-futuras)
+  - [Melhorias de Arquitetura](#melhorias-de-arquitetura)
+  - [Melhorias de Implementação](#melhorias-de-implementacao)
 
-# Visao Geral
+---
+
+## Visao Geral
 
 O **Simple Transfer Service** e um microservico desenvolvido em Java com Spring Boot que permite a realizacao de
 transferencias financeiras entre contas de usuarios (CUSTOMER ou MERCHANT).
 O sistema garante a integridade e consistencia dos dados atraves do uso de transacoes ACID e controle de concorrencia.
 
-# Funcionalidades
+---
+
+## Funcionalidades
 
 - Cadastro de usuarios (tipo CUSTOMER ou MERCHANT) e suas carteiras associadas.
 - Transferencia as financeiras entre carteiras de usuarios (CUSTOMER -> MERCHANT ou CUSTOMER -> CUSTOMER).
@@ -33,7 +43,9 @@ O sistema garante a integridade e consistencia dos dados atraves do uso de trans
 - Autorizacao atraves de servico exterrno.
 - Notificacao do usuario apos a conclusao da transferencia.
 
-# Tecnologias Utilizadas
+---
+
+## Tecnologias Utilizadas
 
 - Java 21.
 - Spring Boot e libs relacionadas (Spring Data JPA, Spring Web).
@@ -46,7 +58,9 @@ O sistema garante a integridade e consistencia dos dados atraves do uso de trans
 - Lombok para reduzir boilerplate code.
 - Gradle como sistema de build.
 
-# Instalacao e execucao
+---
+
+## Instalacao e execucao
 
 Clone o repositorio:
 
@@ -82,14 +96,16 @@ Outros comandos
 
 O servico ficara disponivel em `http://localhost:8080`.
 
-# API Endpoints
+---
+
+## API Endpoints
 
 - `POST /api/v1/users` - Cria um novo usuario com uma carteira/saldo associado.
 - `GET /api/v1/users/documet` - Recupera detalhes de um usuario pelo número de documento.
 - `GET /api/v1/users/email` - Recupera detalhes de um usuario pelo email.
 - `POST /api/v1/transfers` - Inicia uma transferencia entre usuarios.
 
-## Exemplos de chamadas
+### Exemplos de chamadas
 
 ```bash
 ## cria usuario do tipo MERCHANT
@@ -141,9 +157,11 @@ curl -X POST --location "http://localhost:8080/api/v1/transfers" \
 - Em caso de falha na transferencia, o sistema tenta reverter a operacao para manter a consistencia dos dados.
 - Notificacao e enviada ao usuario apos a conclusao da transferencia, seja ela bem sucedida ou nao.
 
-# Arquitetura
+---
 
-## Estudo do problema e arquitetura
+## Arquitetura
+
+### Estudo do problema e arquitetura
 
 Neste estudo, vamos evoluir a arquitetura em passos. Inicialmente, iremos com a versão mais "simples". Nessa versão
 simplificada, proponho uma implementação simples para entendermos ou aproximar dos possíveis problemas do
