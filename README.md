@@ -328,10 +328,12 @@ public interface WalletJpaRepository extends JpaRepository<WalletJpaEntity, Long
 
 ## Melhorias de implementacao
 
+- Melhorias de testes (adicionar mais cenarios, alem de adicionar SBE/BDD).
 - Adicionar ordem na aquisicao dos lock pessimista.
 - Adicionar idempotência nas operacoes de transferencia.
 - Adicionar indexes no banco para otimizar as consultas.
 - Adicionar documentacao da API com Swagger/OpenAPI.
+- Evitar armazenar senha em plain text e validar documento do usuario (CPF e CNPJ).
 - Implementar autenticao e autorizacao com JWT ou OAuth2.
 - Implementar listagem de transacoes com paginacao (e cuidados para evitar o problema N+1).
 - Adicionar monitoramento e logging centralizado, alem de metricas com Prometheus/Grafana.
