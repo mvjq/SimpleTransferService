@@ -84,7 +84,7 @@ public class UserService implements UserUseCase {
         }
 
         if (userRepository.existsByEmailOrDocument(command.getEmail(), command.getDocumentNumber())) {
-            throw new UserAlreadyExistsException("User with email already exists");
+            throw new UserAlreadyExistsException("User with email or document already exists");
         }
 
     }
