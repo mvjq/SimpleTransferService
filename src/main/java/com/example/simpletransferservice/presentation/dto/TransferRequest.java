@@ -15,9 +15,9 @@ import java.math.BigDecimal;
 public class TransferRequest {
     @NotNull
     @Positive
-    private Long payerId;
+    private Long payer;
     @Positive
-    @NotNull Long payeeId;
+    @NotNull Long payee;
     @NotNull
     @DecimalMin(value = "0.01")
     private BigDecimal value;

@@ -46,8 +46,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
                 UserType.CUSTOMER, new BigDecimal("500.00"));
 
         TransferRequest request = TransferRequest.builder()
-                .payerId(payerId)
-                .payeeId(payeeId)
+                .payer(payerId)
+                .payee(payeeId)
                 .value(new BigDecimal("150.00"))
                 .build();
 
@@ -79,8 +79,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
                 UserType.CUSTOMER, new BigDecimal("1000.00"));
 
         TransferRequest request = TransferRequest.builder()
-                .payerId(payerId)
-                .payeeId(payeeId)
+                .payer(payerId)
+                .payee(payeeId)
                 .value(new BigDecimal("100.00"))
                 .build();
 
@@ -106,8 +106,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
                 UserType.CUSTOMER, new BigDecimal("100.00"));
 
         TransferRequest request = TransferRequest.builder()
-                .payerId(merchantId)
-                .payeeId(customerId)
+                .payer(merchantId)
+                .payee(customerId)
                 .value(new BigDecimal("50.00"))
                 .build();
 
@@ -126,8 +126,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
 
 
         TransferRequest request = TransferRequest.builder()
-                .payerId(userId)
-                .payeeId(userId) // Same user!
+                .payer(userId)
+                .payee(userId) // Same user!
                 .value(new BigDecimal("100.00"))
                 .build();
 
@@ -147,8 +147,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
 
         // Given - Transfer with non-existent payer
         TransferRequest request = TransferRequest.builder()
-                .payerId(999L) // Non-existent
-                .payeeId(payeeId)
+                .payer(999L) // Non-existent
+                .payee(payeeId)
                 .value(new BigDecimal("100.00"))
                 .build();
 
@@ -168,8 +168,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
 
 
         TransferRequest request = TransferRequest.builder()
-                .payerId(payerId)
-                .payeeId(999L) // Non-existent
+                .payer(payerId)
+                .payee(999L) // Non-existent
                 .value(new BigDecimal("100.00"))
                 .build();
 
@@ -190,8 +190,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
                 UserType.CUSTOMER, new BigDecimal("500.00"));
 
         TransferRequest zeroRequest = TransferRequest.builder()
-                .payerId(payerId)
-                .payeeId(payeeId)
+                .payer(payerId)
+                .payee(payeeId)
                 .value(BigDecimal.ZERO)
                 .build();
 
@@ -202,8 +202,8 @@ public class TransferControllerIntegrationTest extends IntegrationTestBase {
                 .andExpect(status().is5xxServerError());
 
         TransferRequest negativeRequest = TransferRequest.builder()
-                .payerId(payerId)
-                .payeeId(payeeId)
+                .payer(payerId)
+                .payee(payeeId)
                 .value(new BigDecimal("-50.00"))
                 .build();
 

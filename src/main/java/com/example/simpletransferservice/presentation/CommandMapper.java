@@ -20,16 +20,16 @@ public class CommandMapper {
 
     public TransferCommand toCommand(TransferRequest request) {
         return TransferCommand.builder()
-                .payerId(request.getPayerId())
-                .payeeId(request.getPayeeId())
+                .payerId(request.getPayer())
+                .payeeId(request.getPayee())
                 .value(request.getValue())
                 .build();
     }
 
     public TransferRequest toRequest(TransferCommand command) {
         return TransferRequest.builder()
-                .payerId(command.getPayerId())
-                .payeeId(command.getPayeeId())
+                .payer(command.getPayerId())
+                .payee(command.getPayeeId())
                 .value(BigDecimal.valueOf(command.getValue().doubleValue()))
                 .build();
     }
